@@ -1,6 +1,7 @@
 package com.tomerH.RestaurantReservations.Beans;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
@@ -10,11 +11,14 @@ public class Member{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NonNull
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    @NonNull
     private String email;
     @OneToOne
+    @NonNull
     private UserCredentials credentials;
     @ManyToMany
     private Set<Restaurant> restaurants;
