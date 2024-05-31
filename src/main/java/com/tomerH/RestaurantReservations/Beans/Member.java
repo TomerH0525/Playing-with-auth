@@ -82,4 +82,17 @@ public class Member{
     public void setRestaurants(Set<Restaurant> restaurants) {
         this.restaurants = restaurants;
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", credentials=" + credentials +
+                ", restaurants=" + restaurants +
+                '}';
+    }
 }
