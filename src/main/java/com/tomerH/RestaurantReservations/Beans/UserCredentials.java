@@ -1,34 +1,44 @@
 package com.tomerH.RestaurantReservations.Beans;
 
-import com.tomerH.RestaurantReservations.Beans.Enum.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_credentials")
 public class UserCredentials implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private long id;
+    @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
     private Boolean locked = false;
     private Boolean enabled = true;
-    @Enumerated(EnumType.STRING)
-    private Role userRole;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role_junction",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private Set<Role> authorities;
 
     public UserCredentials() {
+        this.authorities = new HashSet<Role>();
     }
 
-    public UserCredentials(String email, String password, Role userRole) {
-        this.username = email;
+    public UserCredentials(long id, String username, String password, Set<Role> authorities) {
+        this.id = id;
+        this.username = username;
         this.password = password;
-        this.userRole = userRole;
+        this.authorities = authorities;
     }
 
     public long getId() {
@@ -45,12 +55,11 @@ public class UserCredentials implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
-        return Collections.singletonList(authority);
+        return this.authorities;
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
@@ -65,7 +74,7 @@ public class UserCredentials implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !locked;
+        return true;
     }
 
     @Override
@@ -82,11 +91,19 @@ public class UserCredentials implements UserDetails {
         this.password = password;
     }
 
-    public Role getUserRole() {
-        return userRole;
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
     }
 
-    public void setUserRole(Role userRole) {
-        this.userRole = userRole;
+    @Override
+    public String toString() {
+        return "UserCredentials{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + "no password here" + '\'' +
+                ", locked=" + locked +
+                ", enabled=" + enabled +
+                ", authorities=" + authorities +
+                '}';
     }
 }
