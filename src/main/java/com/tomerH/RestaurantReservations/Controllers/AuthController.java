@@ -2,6 +2,7 @@ package com.tomerH.RestaurantReservations.Controllers;
 
 import com.tomerH.RestaurantReservations.Beans.DTO.LoginResponseDTO;
 import com.tomerH.RestaurantReservations.Beans.DTO.RegistrationDTO;
+import com.tomerH.RestaurantReservations.Beans.Member;
 import com.tomerH.RestaurantReservations.Beans.UserCredentials;
 import com.tomerH.RestaurantReservations.Exceptions.LoginFailedException;
 import com.tomerH.RestaurantReservations.Services.AuthenticationService;
@@ -21,8 +22,15 @@ public class AuthController {
     }
 
     @PostMapping("/register/member")
-    public UserCredentials registerMember(@RequestBody RegistrationDTO registrationBody) throws Exception {
-        return credentialsService.registerMember(registrationBody.getUsername(),registrationBody.getPassword());
+    public LoginResponseDTO registerMember(@RequestBody RegistrationDTO body) throws Exception {
+        return credentialsService.memberRegistration(
+                body.getPassword(),
+                body.getUsername(),
+                body.getFirstName(),
+                body.getLastName(),
+                body.getPhoneNumber(),
+                body.getEmail());
+
     }
 
     @PostMapping("/login/member")
