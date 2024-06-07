@@ -2,11 +2,14 @@ package com.tomerH.RestaurantReservations.Beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,8 +20,10 @@ public class UserCredentials implements UserDetails {
     @Column(name = "user_id")
     private long id;
     @Column(unique = true)
+    @NonNull
     private String username;
     @JsonIgnore
+    @NonNull
     private String password;
     private Boolean locked = false;
     private Boolean enabled = true;
@@ -106,4 +111,17 @@ public class UserCredentials implements UserDetails {
                 ", authorities=" + authorities +
                 '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserCredentials that)) return false;
+        return username.equals(that.username) &&
+                password.equals(that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password);
+    }
 }
+
